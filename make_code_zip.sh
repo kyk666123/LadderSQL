@@ -76,7 +76,7 @@ if find "${DEST}" -name "*.sqlite" | grep -q .; then echo "[WARN] .sqlite files 
 # the only outbound host we are allowed to have. The rest of the allowlist is documentation links
 # in comments (papers, StackOverflow answers) and loopback addresses -- none of them can receive data.
 HOSTS=$(grep -rIoh "https\?://[a-zA-Z0-9.-]\+" "${DEST}" 2>/dev/null | sort -u \
-        | grep -v "dashscope.aliyuncs.com\|localhost\|127.0.0.1\|0.0.0.0\|github.com\|modelscope.cn\|pytorch.org\|huggingface.co\|bird-bench.github.io\|opensource.org\|www.apache.org\|arxiv.org\|stackoverflow.com\|courses.cs.washington.edu" || true)
+        | grep -v "api.siliconflow.cn\|dashscope.aliyuncs.com\|localhost\|127.0.0.1\|0.0.0.0\|github.com\|modelscope.cn\|pytorch.org\|huggingface.co\|bird-bench.github.io\|opensource.org\|www.apache.org\|arxiv.org\|stackoverflow.com\|courses.cs.washington.edu" || true)
 if [ -n "${HOSTS}" ]; then
     echo "[WARN] unexpected URLs in the package (check none of them can receive a database):"
     echo "${HOSTS}"

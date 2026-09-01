@@ -13,7 +13,7 @@
 # continues from where it stopped (see Readme.md §6).
 #
 # Usage:
-#   export JUDGE_API_KEY=...  JUDGE_API_BASE=https://dashscope.aliyuncs.com/compatible-mode/v1
+#   export JUDGE_API_KEY=...  JUDGE_API_BASE=https://api.siliconflow.cn/v1
 #   TEST_JSON=/data/test.json TEST_DB_DIR=/local/test_databases \
 #   SCHEMA_CACHE=/work/schema_cache_test_rendered.json \
 #   MODEL_DIR=/local/models/LadderSQL-14B \
@@ -175,6 +175,24 @@ if want api; then
     [ -n "${JUDGE_API_KEY:-}" ] || { echo "[FATAL] JUDGE_API_KEY is not set (needed by stages 3-4)"; exit 1; }
 fi
 export DASHSCOPE_API_KEY="${DASHSCOPE_API_KEY:-${JUDGE_API_KEY:-}}"
+
+# ---- closed-source LLM endpoint + model name -------------------------------------------------
+# GLM-5.2 is the same model everywhere, but the model-name STRING is provider-specific
+# (SiliconFlow: zai-org/GLM-5.2 ; DashScope: glm-5.2). Derive it from JUDGE_API_BASE so a wrong
+# name never reaches the API, unless the caller pins GLM_MODEL explicitly. Also mirror the
+# endpoint/key into the OPENAI_* names that stage 1 (APEX + light schema) reads.
+export JUDGE_API_BASE="${JUDGE_API_BASE:-https://api.siliconflow.cn/v1}"
+export OPENAI_API_BASE="${OPENAI_API_BASE:-${JUDGE_API_BASE}}"
+export OPENAI_API_KEY="${OPENAI_API_KEY:-${JUDGE_API_KEY:-}}"
+if [ -z "${GLM_MODEL:-}" ]; then
+    case "${JUDGE_API_BASE}" in
+        *siliconflow*) GLM_MODEL="zai-org/GLM-5.2" ;;
+        *)             GLM_MODEL="glm-5.2" ;;
+    esac
+fi
+export GLM_MODEL
+export MULTIREP_MODEL="${MULTIREP_MODEL:-${GLM_MODEL}}"
+export REPAIR_MODEL="${REPAIR_MODEL:-${GLM_MODEL}}"
 
 # stage_wall.json path (run()/timed()/STAGE_SEC are defined at the top of this script)
 STAGE_WALL="${WORK_DIR}/logs/stage_wall.json"

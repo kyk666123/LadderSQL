@@ -24,8 +24,11 @@ of the 1,534 selected queries, **3 fail to execute (0.20%) and 5 return an empty
 Stage 1 produced `schema_cache_old_dev_rendered.json` (1,533 entries, avg 3,067 characters)
 following `STAGE1_RUNBOOK.md` with the dev inputs. Then:
 
+> The reported 73.66 was originally produced with GLM-5.2 on DashScope (`glm-5.2`); that key is now
+> retired. GLM-5.2 on SiliconFlow (`zai-org/GLM-5.2`) is the same model, so the commands below use it.
+
 ```bash
-export JUDGE_API_KEY=... JUDGE_API_BASE=https://dashscope.aliyuncs.com/compatible-mode/v1
+export JUDGE_API_KEY=... JUDGE_API_BASE=https://api.siliconflow.cn/v1 GLM_MODEL=zai-org/GLM-5.2
 export BON_DATASET=bird BON_DB_DIR=/local/bird_dev_databases
 
 # stage 2: 32 candidates per question (8 GPUs, one vLLM each)

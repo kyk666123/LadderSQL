@@ -32,14 +32,17 @@ import bird_common as B
 import gated_common as G
 from openai import OpenAI
 
-# base_url / api_key 可用 env 覆盖 (跨判别器供应商: DashScope / routify 等), 默认 DashScope 向后兼容。
-API_BASE = os.environ.get("JUDGE_API_BASE", "https://dashscope.aliyuncs.com/compatible-mode/v1")
+# base_url / api_key are overridable via env (for cross-provider judges: SiliconFlow / DashScope / etc).
+# Default to SiliconFlow (our validated provider); run_test.sh always exports JUDGE_API_BASE explicitly.
+API_BASE = os.environ.get("JUDGE_API_BASE") or os.environ.get("OPENAI_API_BASE") or "https://api.siliconflow.cn/v1"
 API_KEY = os.environ.get("JUDGE_API_KEY", "")
-MODEL = "glm-5.2"
-USE_SIMPLICITY = False  # --simplicity 开启: 注入抗过度解读先验
+# Standalone default only; when driven by tournament_blind the model name is passed in explicitly
+# (from MULTIREP_MODEL). Model-name string is provider-specific: SiliconFlow -> zai-org/GLM-5.2.
+MODEL = os.environ.get("MULTIREP_MODEL") or os.environ.get("GLM_MODEL", "glm-5.2")
+USE_SIMPLICITY = False  # enabled by --simplicity: inject an anti-over-interpretation prior
 
-# 可选 DNS 覆盖: 本机 VPC resolver 解析不了某内网公网域名时, 用 "host=ip" 直接映射
-# (保留 hostname 做 TLS SNI, 只把连接 IP 换掉)。未设置则不影响原有行为。
+# Optional DNS override: when the local VPC resolver cannot resolve a public host, map it directly
+# with "host=ip" (keep the hostname for TLS SNI, only swap the connect IP). No effect if unset.
 _DNS_OVR = os.environ.get("JUDGE_DNS_OVERRIDE")
 if _DNS_OVR and "=" in _DNS_OVR:
     _ovh, _ovip = _DNS_OVR.split("=", 1)

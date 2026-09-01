@@ -89,8 +89,8 @@ code never reads that field (stage 2 runs with `--no-gold`, stage 3 with `--no-g
 
 ### What leaves the machine (data egress disclosure)
 
-Only stages 1, 3, 4 call the external endpoint (`https://dashscope.aliyuncs.com/compatible-mode/v1`,
-model `glm-5.2`). Each request contains: the question text, the evidence string, the linked schema
+Only stages 1, 3, 4 call the external endpoint (`https://api.siliconflow.cn/v1`,
+model `zai-org/GLM-5.2`). Each request contains: the question text, the evidence string, the linked schema
 text (table/column names + descriptions), candidate SQL strings, and **at most 5 preview rows plus a
 few example rows of the set-difference between two candidate results** (each cell truncated to
 ≤200 characters). No full table dumps, no file uploads, no other outbound hosts. The only network
@@ -121,10 +121,17 @@ pip install -r requirements.txt
 
 ```bash
 export JUDGE_API_KEY=...       # GLM-5.2 key (stages 3, 4)  — supplied separately by e-mail
-export JUDGE_API_BASE=https://dashscope.aliyuncs.com/compatible-mode/v1
+export JUDGE_API_BASE=https://api.siliconflow.cn/v1
 export DASHSCOPE_API_KEY=$JUDGE_API_KEY    # stage 1 uses the same key
 export ALICLOUD_API_KEY=$JUDGE_API_KEY
 ```
+
+> **Model name is provider-specific — do not hardcode it.** GLM-5.2 is the same model on every
+> provider, but the model-name string differs: SiliconFlow calls it `zai-org/GLM-5.2`, DashScope
+> calls it `glm-5.2` (a wrong name returns a "model not found" error). `run_test.sh` derives the
+> right name from `JUDGE_API_BASE` automatically; you only need `export GLM_MODEL=...` if you use a
+> provider whose spelling we do not recognise. To run on DashScope instead, set
+> `JUDGE_API_BASE=https://dashscope.aliyuncs.com/compatible-mode/v1` and it will use `glm-5.2`.
 
 ### Models
 

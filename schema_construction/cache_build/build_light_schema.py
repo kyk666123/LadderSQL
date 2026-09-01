@@ -20,11 +20,11 @@ BASE_DATA_PATH = "/path/to/nl2sql_dataset/bird/train"   # 存放 *_tables.json �
 # 已解压且带 database_description CSV 的库目录（Value Description 依赖 CSV，不能丢）
 DB_FOLDER_OVERRIDE = "/root/local_bird_db"
 COLUMN_MEANING_PATH = "/path/to/column_meaning.json"   # BIRD 官方 column_meaning.json（test 提交时用他们给的那份）
-MODEL_NAME = "glm-5.2"  # 必须含连字符，否则 404
+MODEL_NAME = os.environ.get("GLM_MODEL", "glm-5.2")  # provider-specific (SiliconFlow: zai-org/GLM-5.2); keep the hyphen or it 404s
 MODEL_PROVIDER = "openai"
 ENV_API_KEY = "ALICLOUD_API_KEY"
 ENV_BASE_URL = "ALICLOUD_BASE_URL"
-DEFAULT_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+DEFAULT_BASE_URL = "https://api.siliconflow.cn/v1"
 DEFAULT_API_KEY = ""   # 由 ALICLOUD_API_KEY / DASHSCOPE_API_KEY 环境变量提供
 # =====================================================
 
@@ -246,8 +246,8 @@ class BIRDSchemaGenerator:
         self.llm = self._init_llm()
 
     def _init_llm(self):
-        api_key = os.environ.get(ENV_API_KEY) or os.environ.get("DASHSCOPE_API_KEY") or DEFAULT_API_KEY
-        base_url = os.environ.get(ENV_BASE_URL, DEFAULT_BASE_URL)
+        api_key = os.environ.get(ENV_API_KEY) or os.environ.get("DASHSCOPE_API_KEY") or os.environ.get("JUDGE_API_KEY") or DEFAULT_API_KEY
+        base_url = os.environ.get(ENV_BASE_URL) or os.environ.get("JUDGE_API_BASE") or os.environ.get("OPENAI_API_BASE") or DEFAULT_BASE_URL
 
         if not api_key:
             logging.error(f"❌ 未找到 API Key。请设置环境变量 {ENV_API_KEY} 或 DASHSCOPE_API_KEY")

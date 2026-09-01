@@ -22,6 +22,7 @@ That file is the `SCHEMA_CACHE` input of `run_test.sh`. Everything below runs on
 | `test_tables.json`, `test.json`, `column_meaning.json` | as provided by BIRD |
 | Sentence-embedding model `all-MiniLM-L6-v2` | local directory; used for cell-value retrieval (1 GPU, or CPU if slow is acceptable) |
 | `JUDGE_API_KEY` / `DASHSCOPE_API_KEY` / `ALICLOUD_API_KEY` exported | stage 1 calls GLM-5.2 |
+| **`JUDGE_API_BASE` + `GLM_MODEL`** | endpoint + model name. On **SiliconFlow** (our validated provider): `JUDGE_API_BASE=https://api.siliconflow.cn/v1` and `GLM_MODEL=zai-org/GLM-5.2`. On DashScope: `.../compatible-mode/v1` and `glm-5.2`. The stage-1 scripts below honour `GLM_MODEL` / `JUDGE_API_BASE`, so export them once and every step picks them up. |
 | **APEX-SQL project source** | our Bird schema linker — see §1 |
 
 ## 1. Schema linking (APEX-SQL) — the one external dependency
@@ -40,7 +41,8 @@ python run_apex_sl.py \
     --data_json  /path/to/test.json \
     --db_root    /local/test_databases \
     --work_dir   /work/apex_test
-# -> /work/apex_test/results_glm-5.2.json     (one linked-schema record per question)
+# -> /work/apex_test/results_<model>.json     (one linked-schema record per question;
+#    the filename slug replaces '/' with '_', e.g. results_zai-org_GLM-5.2.json on SiliconFlow)
 ```
 
 The driver expects, inside the APEX-SQL project: `BIRD/schema_linking.py` exposing
@@ -100,7 +102,7 @@ python build_old_dev_redundant_cache.py
 | Constant | Set it to |
 |---|---|
 | `BASE` | any working directory prefix |
-| `APEX_PATH` | §1 output (`results_glm-5.2.json`) |
+| `APEX_PATH` | §1 output (`results_<model>.json`, e.g. `results_zai-org_GLM-5.2.json`) |
 | `LIGHT_PATH` | §2 output |
 | `VR_PATH` | §3 output |
 | `OUT_STRUCT` | structured candidate tree (intermediate) |

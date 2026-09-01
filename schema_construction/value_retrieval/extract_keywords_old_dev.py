@@ -22,9 +22,9 @@ APEX_PATH = "/path/to/schema_link_results/bird_old_dev/results_glm-5.2.json"
 OUTPUT_PATH = "/root/bird_old_dev_keywords.json"
 OSS_OUTPUT_PATH = "/path/to/schema_link_results/bird_old_dev/keywords_old_dev.json"
 
-API_KEY = os.environ.get("DASHSCOPE_API_KEY", "")
-API_BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-KW_MODEL = "glm-5.2"
+API_KEY = os.environ.get("DASHSCOPE_API_KEY") or os.environ.get("JUDGE_API_KEY", "")
+API_BASE = os.environ.get("JUDGE_API_BASE") or os.environ.get("OPENAI_API_BASE") or "https://api.siliconflow.cn/v1"
+KW_MODEL = os.environ.get("GLM_MODEL", "glm-5.2")  # SiliconFlow: zai-org/GLM-5.2
 
 MAX_KEYWORDS = 8
 WORKERS = 12

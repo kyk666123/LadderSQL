@@ -4,11 +4,13 @@ import random
 import threading
 from openai import OpenAI
 
-OPENAI_API_KEY  = os.environ.get("OPENAI_API_KEY",  "")
-OPENAI_API_BASE = os.environ.get("OPENAI_API_BASE", "https://dashscope.aliyuncs.com/compatible-mode/v1/")
+OPENAI_API_KEY  = os.environ.get("OPENAI_API_KEY",  "") or os.environ.get("JUDGE_API_KEY", "")
+# Model name is provider-specific: SiliconFlow -> zai-org/GLM-5.2 ; DashScope -> glm-5.2.
+# Honour JUDGE_API_BASE (the single knob the rest of the pipeline uses) before falling back.
+OPENAI_API_BASE = os.environ.get("OPENAI_API_BASE") or os.environ.get("JUDGE_API_BASE") or "https://api.siliconflow.cn/v1"
 DEFAULT_MODEL   = os.environ.get("GLM_MODEL", "glm-5.2")
 
-# 全局限流计数（跨线程），供 runner 汇总
+# global rate-limit counter (cross-thread), aggregated by the runner
 RATE_LIMIT_COUNTER = 0
 _rl_lock = threading.Lock()
 
