@@ -1,0 +1,47 @@
+LadderSQL — BIRD test submission package
+Copyright (c) 2026 The LadderSQL Authors
+Licensed under the MIT License (see LICENSE).
+
+================================================================================
+Third-party components in THIS package
+================================================================================
+
+1) Spider evaluation scripts  ->  training/reward_func/spider_eval/
+   Derived from the official Spider benchmark evaluation code
+   (https://github.com/taoyds/spider) and its execution-accuracy variants.
+   In this package they are only reachable when a gold SQL is present, i.e. when
+   re-scoring our own dev predictions. They are never used on the test split
+   (test.json ships an empty "SQL" field and the pipeline runs with --no-gold).
+
+Note: our research repository vendors Agent Lightning
+(https://github.com/microsoft/agent-lightning, MIT, Copyright (c) Microsoft
+Corporation) for the RL training loop. It has been REMOVED from this submission
+package because test-time inference does not need any training framework; the
+only import site is satisfied by generation/_agl_stub.py (our own 60-line
+placeholder). No Microsoft code is included here.
+
+================================================================================
+External code not included
+================================================================================
+
+APEX-SQL  ->  stage1_apex_sql/APEX-SQL-Project/  (mailed package only)
+   Stage 1 (schema linking for Bird) reproduces APEX-SQL.
+   Upstream : https://github.com/Tencent/APEX-SQL-Project
+   Paper    : APEX-SQL: Talking to the data via Agentic Exploration for Text-to-SQL,
+              https://arxiv.org/abs/2602.16720
+   Copyright belongs to its authors. The copy we obtained carries no LICENSE file, so we do
+   NOT redistribute it through our public code repository. The package mailed to the BIRD
+   Exp Team contains the five files stage 1 imports -- schema_linking.py, preprocess.py,
+   utils.py, sql.py, chat.py -- unmodified except that chat.py is replaced by our env-driven
+   copy (schema_construction/apex_sql_runner/chat.py) so that no credential is embedded.
+   We use APEX-SQL only for schema linking; its SQL-generation, reward-model and evaluation
+   components are not used and not shipped.
+   Please obtain it from the upstream repository for any other purpose.
+
+================================================================================
+Models
+================================================================================
+
+The released checkpoint is fine-tuned from Qwen2.5-Coder-14B-Instruct (Alibaba
+Cloud); its original licence terms apply to the derived weights. Weights are
+distributed via ModelScope, not in this archive (see MODEL_LINKS.txt).

@@ -1,0 +1,28 @@
+LadderSQL — released checkpoint
+================================================================================
+
+LadderSQL-14B   (Bird-dev EX 73.66)
+
+    ModelScope : https://www.modelscope.cn/models/kyk666/LadderSQL-14B-BIRD
+    Visibility : public — no token or account needed
+    Size       : 28 GB, bf16, 7 safetensors shards (18 files total)
+    Base model : Qwen/Qwen2.5-Coder-14B-Instruct   (Apache-2.0, inherited)
+    Integrity  : all 18 files verified against our source checkpoint by full SHA256 after upload
+
+    Download:
+        pip install modelscope
+        modelscope download --model kyk666/LadderSQL-14B-BIRD \
+                            --local_dir /local/models/LadderSQL-14B
+
+    Serve with vLLM:
+        --served-model-name qwen2.5-coder --max-model-len 24576 --dtype bfloat16
+
+Not published on Hugging Face. This is the only checkpoint in the submission —
+one model answers every question, there is no ensemble.
+
+Notes for the Exp Team
+--------------------------------------------------------------------------------
+- Download to a LOCAL disk and point run_test.sh at it with MODEL_DIR=<dir>.
+- config.json declares "dtype": "bfloat16" (transformers >= 4.56 naming). On older
+  transformers add "torch_dtype": "bfloat16", or it silently loads fp32 and OOMs.
+- The GLM-5.2 API key for stages 1, 3 and 4 is sent in a separate e-mail.

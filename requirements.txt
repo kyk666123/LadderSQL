@@ -1,0 +1,49 @@
+# LadderSQL — inference-only dependencies (BIRD test submission)
+#
+# This package does NOT need the RL training stack: no verl, no ray, no
+# agentlightning, no opentelemetry. The ReAct agent used at inference is plain
+# LangGraph + LangChain talking to a local vLLM server over the OpenAI API.
+# (`generation/_agl_stub.py` supplies a 60-line stand-in for the training
+#  wrapper's base class, so the module imports cleanly without that stack.)
+#
+# Install:
+#   pip install -r requirements.txt
+# Then install a torch + vLLM pair matching YOUR CUDA (see the note at the bottom).
+
+# ---- core ----
+pandas
+pyarrow
+numpy
+tqdm
+python-dotenv
+
+# ---- LLM clients / agent stack (stage 1, 2, 3, 4) ----
+openai>=1.30            # OpenAI-compatible client: local vLLM + GLM-5.2 endpoint
+langchain>=0.3
+langchain-core>=0.3
+langchain-community>=0.3
+langgraph>=0.2
+SQLAlchemy>=2.0         # used by langchain_community SQLDatabase
+pydantic>=2.0
+
+# ---- SQL parsing / rewriting (stage 3 repair, reward utilities) ----
+sqlparse
+sqlglot
+
+# ---- stage 1 only: cell-value retrieval ----
+chromadb
+sentence-transformers
+
+# ---- stage 1 only: APEX-SQL schema linker needs these ----
+json_repair
+func_timeout
+
+# ---- model serving (stage 2 only) --------------------------------------------
+# Pick a torch/vLLM pair that matches the CUDA on the evaluation machine.
+# We ran CUDA 12.8 with torch 2.8 + a matching vLLM. For CUDA 12.2/12.3, e.g.:
+#   pip install torch==2.4.0 --index-url https://download.pytorch.org/whl/cu121
+#   pip install vllm==0.6.3
+# transformers is pulled in by vLLM; pin it only if vLLM complains.
+# vllm
+# torch
+# transformers

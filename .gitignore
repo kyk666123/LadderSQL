@@ -1,0 +1,60 @@
+# byte-compiled
+__pycache__/
+*.py[cod]
+*.so
+
+# environments
+.venv/
+venv/
+.env
+
+# data / models / databases (never commit)
+*.sqlite
+*.sqlite3
+*.parquet
+*.zip
+*.tar
+*.tar.gz
+*.bin
+data/
+databases/
+checkpoints/
+outputs/
+results/
+cache/
+wandb/
+
+# rollout / trajectory dumps
+react_trajectories/
+*_rollouts_*.json
+*_trajectories_*.jsonl
+
+# logs
+*.log
+nohup.out
+
+# editors / OS
+.vscode/
+.idea/
+.DS_Store
+.ipynb_checkpoints/
+
+# built artifacts
+dist/
+work/
+
+# personal launcher (contains API key) — never commit/ship
+run_dev_full.sh
+
+# internal submission note (Chinese, for the author only) and local smoke tests —
+# excluded from the mailed code.zip by make_code_zip.sh; keep them out of the public repo too
+_HOW_TO_SEND.md
+tools/_smoke_*.py
+tools/_smoke_out/
+
+# Third-party: APEX-SQL (stage-1 schema linker, https://github.com/Tencent/APEX-SQL-Project).
+# Copyright belongs to its authors and the copy we obtained carries no LICENSE file, so it is
+# NOT redistributed through this public repository. It IS present in the working tree (5 files,
+# 122 KB) so that make_code_zip.sh can bundle it into the package we mail to the BIRD Exp Team
+# for the sole purpose of reproducing this submission. Get it from the upstream repository.
+stage1_apex_sql/APEX-SQL-Project/
