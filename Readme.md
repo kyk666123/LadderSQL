@@ -31,10 +31,24 @@ Contents
 | `stage1_apex_sql/` | where APEX-SQL goes — the one third-party dependency, used by stage 1 only (see `STAGE1_RUNBOOK.md` §1 and the README in that directory) |
 | `make_code_zip.sh` | builds the trimmed `code.zip` we mail out |
 
-Also in the repository but **not needed to reproduce this submission** — our own launchers for
-multi-machine runs and cost profiling: `run_gen_8gpu.sh`, `run_gen_dlc.sh`, `run_profile_140g.sh`,
-`PROFILE_GUIDE.md`, `sample_selection/scripts/`, `tools/profile_report.py`,
-`tools/merge_llm_usage.py`. Ignore them unless you want to reproduce our timing tables.
+Also in the repository but **not needed to reproduce this submission** — research / development
+artifacts only. To reproduce `predict_test.json`, follow §3 and **ignore everything below**:
+
+- multi-machine launchers and cost profiling: `run_gen_8gpu.sh`, `run_gen_dlc.sh`,
+  `run_profile_140g.sh`, `PROFILE_GUIDE.md`, `sample_selection/scripts/`,
+  `tools/profile_report.py`, `tools/merge_llm_usage.py`;
+- Spider-benchmark scripts (a different benchmark, unrelated to this BIRD submission):
+  `schema_construction/direct_linking/*spider*`, `inference_selection/scripts/run_spider_*.sh`;
+- ablation / evaluation-analysis scripts we used during development:
+  `inference_selection/{ablation_report,eval_bon_trend,eval_maj_8vs32,eval_multirep,eval_multirep_weighted,report_baseline}.py`,
+  `inference_selection/scripts/{run_bon32_pipeline,run_bon_trend,run_tournament_all}.sh`,
+  `schema_construction/eval/*`;
+- dev/train cache-building and value-retrieval variants (this submission runs on test-set inputs, not on the dev/train caches):
+  `schema_construction/cache_build/build_{clean_dev,old_dev,schema_cache_train,rendered_cache_train}*`,
+  `schema_construction/value_retrieval/*{train,clean_dev,old_dev,gpu,parallel,rebuild}*`.
+
+The `run_test.sh` driver only ever calls the specific scripts named in §3; none of the files
+listed here are on that path, so they cannot affect reproduction.
 
 ---
 
